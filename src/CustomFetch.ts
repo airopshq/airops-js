@@ -13,7 +13,11 @@ class CustomFetch {
 
   async post(url: string, payload: unknown) {
     const headers = this.getHeaders();
-    const response = await fetch(url, { method: 'POST', headers, body: JSON.stringify(payload) });
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    });
 
     if (!response.ok) {
       await this.handleError(response);
@@ -72,7 +76,10 @@ class CustomFetch {
       const error = await response.json();
       apiError = { message: error.error, status: response.status };
     } catch {
-      apiError = { message: response.statusText || 'Internal API error', status: response.status };
+      apiError = {
+        message: response.statusText || 'Internal API error',
+        status: response.status,
+      };
     }
     throw new ApiError(apiError);
   }

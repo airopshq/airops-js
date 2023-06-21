@@ -1,173 +1,191 @@
-# @airops/sdk
+# @airops/airops-js
 
-## Getting Started
+Use [AirOps](https://docs.airops.com/docs/client-sdk) API in your client application with our JavaScript SDK.
 
-1. Server configuration
+[![npm](https://img.shields.io/npm/v/@airops/airops-js.svg)](https://www.npmjs.com/package/@airops/airops-js)
 
-   To authenticate with our API using the SDK, you'll need three pieces of information: your workspace id, user
-   id, and API key. First, use the API key to hash your user id on your back-end server. This will result in a
-   hashed user id that is unique to your API key and user id combination. Workspace id and API key can be found in your
-   workspace settings. Below is an example nodejs configuration.
+# Getting Started
 
-   ```javascript
-   const crypto = require('crypto');
+## Server configuration
 
-   const userIdHash = () => {
-     const apiKey = "YOUR_API_KEY";
-     const userId = "YOUR_USER_ID";
+To authenticate with our API using the SDK, you'll need three pieces of information: your workspace id, API key and user
+id (identifier for the user in your application). First, use the API key to hash your user id on your back-end server. This will result in a
+hashed user id that is unique to your API key and user id combination. Workspace id and API key can be found in your
+workspace settings.
 
-     // Convert your api key to a buffer
-     const key = Buffer.from(apiKey, 'utf-8');
+### Example Node.js backend configuration.
 
-     // Hash the message using HMAC-SHA256 and the key
-     const hash = crypto.createHmac('sha256', key)
-       .update(userId)
-       .digest('hex');
+```javascript
+const crypto = require('crypto');
 
-     return hash;
-   }
-   ```
-2. Install the client SDK
+const userIdHash = () => {
+  const apiKey = 'YOUR_API_KEY';
+  const userId = 'YOUR_USER_ID';
 
-   ```bash
-    npm i @airops/js_sdk
-   ```
+  // Convert your api key to a buffer
+  const key = Buffer.from(apiKey, 'utf-8');
 
-3. Identify the user
+  // Hash the message using HMAC-SHA256 and the key
+  const hash = crypto.createHmac('sha256', key).update(userId).digest('hex');
 
-   ```javascript
-   const airopsInstance = AirOps.identify({
-     userId: 'YOUR_USER_ID',
-     workspaceId: 'YOUR_WORKSPACE_ID',
-     hashedUserId: 'YOUR_USER_ID_HASH'
-   })
-   ```
+  return hash;
+};
+```
 
-4. Use it to execute an app
+## Installation
 
-   Once you have successfully initialized the SDK, you can begin using the methods available to interact with our API.
-   Note that the methods will return promises.
+```bash
+ npm i @airops/airops-js
+```
 
-   ```javascript
-   // Execute an app
-   const response = await airopsInstance.apps.execute({
-     appId: 1,
-     version: 1,
-     payload: {
-       "inputs": {
-         "name": "XXXXYYYYZZZZ"
-       }
-     }
-   });
+or use the CDN:
 
-   // Wait for result
-   const result = await response.result();
-   // Do something with result.output
+```html
+<script src=“https://cdn.jsdelivr.net/npm/@airops/airops-js/dist/index.umd.min.js”></script>
+```
 
-   // Cancel execution
-   await response.cancel();
-   ```
+## Initialize the SDK
 
-5. Example response
+```javascript
+const airopsInstance = AirOps.identify({
+  userId: 'YOUR_USER_ID',
+  workspaceId: 'YOUR_WORKSPACE_ID',
+  hashedUserId: 'YOUR_USER_ID_HASH',
+});
+```
 
-   The response from the execute method will contain the execution id that can be used to retrieve results later along with two methods to wait for results or cancel the execution:
+## Usage
 
-   ```typescript
-   interface ExecuteResponse {
-     executionId: number;
-     result: () => Promise<AppExecution>;
-     cancel: () => Promise<void>;
-   }
+Once you have successfully initialized the SDK, you can begin using the methods available to interact with our API.
+Note that the methods will return promises.
 
-   interface AppExecution {
-     airops_app_id: number;
-     id: number;
-     status: string;
-     output: string;
-     stream_channel_id: string;
-   }
-   ```
+```javascript
+// Execute an app
+const response = await airopsInstance.apps.execute({
+  appId: 1,
+  version: 1,
+  payload: {
+    inputs: {
+      name: 'XXXXYYYYZZZZ',
+    },
+  },
+});
 
-6. Execute an app with streaming
+// Wait for result
+const result = await response.result();
+// Do something with result.output
 
-   In order to stream the app results you will need to enable stream and pass a callback function to the execute method.
-   Optionally you can pass an extra callback function to get a notification when the app is finished.
+// Cancel execution
+await response.cancel();
+```
 
-   ```javascript
-   const response = await airopsInstance.apps.execute({
-     appId: 1,
-     version: 1,
-     payload: {
-       inputs: {
-         name: "XXXXYYYYZZZZ",
-       },
-     },
-     stream: true,
-     streamCallback: (data: { content: string }) => {
-       // Do something with the data
-     },
-     streamCompletedCallback: (data: { content: string }) => {
-       // Do something with the data
-     },
-   });
-   ```
+### Example response
 
-7. Pull results async
+The response from the execute method will contain the execution id that can be used to retrieve results later along with two methods to wait for results or cancel the execution:
 
-   You can implement your own pulling logic using the getResults method.
+```typescript
+interface ExecuteResponse {
+  executionId: number;
+  result: () => Promise<AppExecution>;
+  cancel: () => Promise<void>;
+}
 
-   ```javascript
-   const result = await airopsInstance.apps.getResults({
-     appId: 1,
-     executionId: response.executionId,
-   });
-   ```
+interface AppExecution {
+  airops_app_id: number;
+  id: number;
+  status: string;
+  output: string;
+  stream_channel_id: string;
+}
+```
 
-8. Error handling
-   ```javascript
-   try {
-     await airopsInstance.apps.execute({
-       appId: 1,
-       version: 4,
-       payload: {
-         inputs: { name: "XXXXYYYYZZZZ" },
-       },
-     });
-   } catch (e) {
-     // Do something with error.message
-   }
-   ```
+The result method implements pulling logic for results with a timeout of 10 minutes. If you want to implement your own pulling logic you can use the getResults method described below.
 
-9. Chat assistant
+### Execute an app with streaming
 
-   ```javascript
-   const response = await airopsInstance.apps.chatStream({
-     appId: 2,
-     message,
-     streamCallback: (data: { token: string; }) => {
-       // do something with data.token
-     },
-     streamCompletedCallback: (data: { result: string }) => {
-       // do something with data.result
-     },
-     ...(sessionId && { sessionId }), // optionally pass sessionId to continue chat.
-   });
-   // Wait for result
-   const result = await response.result;
-   // Do something with result.result
-   
-   // Use session id to continue chat
-   response.sessionId;
-   ```
+In order to stream the app results you will need to enable stream and pass a callback function to the execute method.
+Optionally you can pass an extra callback function to get a notification when the app is finished.
 
-10. Example response
+```javascript
+const response = await airopsInstance.apps.execute({
+  appId: 1,
+  version: 1,
+  payload: {
+    inputs: {
+      name: 'XXXXYYYYZZZZ',
+    },
+  },
+  stream: true,
+  streamCallback: (data: { content: string }) => {
+    // Do something with the data
+  },
+  streamCompletedCallback: (data: { content: string }) => {
+    // Do something with the data
+  },
+});
+```
 
-    The response from the chatStream method will contain the sessionId and a result method to wait for the response.
-    In order to continue with the chat pass the sessionId along with the message.
-    
-    ```typescript
-    export interface ChatStreamResponse {
-      sessionId: string;
-      result: Promise<{ result: string }>; // result is a promise that resolves when the execution is completed.
-    }
-    ```
+### Pull results async
+
+You can implement your own pulling logic using the getResults method.
+
+```javascript
+const result = await airopsInstance.apps.getResults({
+  appId: 1,
+  executionId: response.executionId,
+});
+```
+
+### Chat Stream
+
+```javascript
+const response = await airopsInstance.apps.chatStream({
+  appId: 2,
+  message,
+  streamCallback: (data: { token: string }) => {
+    // do something with data.token
+  },
+  streamCompletedCallback: (data: { result: string }) => {
+    // do something with data.result
+  },
+  ...(sessionId && { sessionId }), // optionally pass sessionId to continue chat.
+});
+// Wait for result
+const result = await response.result;
+// Do something with result.result
+
+// Use session id to continue chat
+response.sessionId;
+```
+
+### Example response
+
+The response from the chatStream method will contain the sessionId and a result method to wait for the response.
+In order to continue with the chat pass the sessionId along with the message.
+
+```typescript
+export interface ChatStreamResponse {
+  sessionId: string;
+  result: Promise<{ result: string }>; // result is a promise that resolves when the execution is completed.
+}
+```
+
+### Error handling
+
+```javascript
+try {
+  await airopsInstance.apps.execute({
+    appId: 1,
+    version: 4,
+    payload: {
+      inputs: { name: 'XXXXYYYYZZZZ' },
+    },
+  });
+} catch (e) {
+  // Do something with error.message
+}
+```
+
+### Need help?
+
+Join our AirOps builder [slack](https://join.slack.com/t/airopsbuilders/shared_invite/zt-1whiyc290-fw8tsDn0nq89UqGSXIcUNA) community.

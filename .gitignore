@@ -2,3 +2,4 @@
 .env.staging
 /dist
 /node_modules
+.idea/
