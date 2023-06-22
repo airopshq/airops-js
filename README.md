@@ -59,6 +59,9 @@ const airopsInstance = AirOps.identify({
 Once you have successfully initialized the SDK, you can begin using the methods available to interact with our API.
 Note that the methods will return promises.
 
+### Execute an App
+The SDK provides a method for executing an app. In order to stream the app results you will need to enable stream and pass a callback function to the execute method. Optionally you can pass an extra callback function to get a notification when the app is finished.
+
 ```javascript
 // Execute an app
 const response = await airopsInstance.apps.execute({
@@ -69,6 +72,13 @@ const response = await airopsInstance.apps.execute({
       name: 'XXXXYYYYZZZZ',
     },
   },
+  stream: true, // Optional - Default false
+  streamCallback: (data: { content: string }) => {
+    // Do something with the data
+  }, // Optional
+  streamCompletedCallback: (data: { content: string }) => {
+    // Do something with the data
+  }, // Optional
 });
 
 // Wait for result
@@ -79,7 +89,7 @@ const result = await response.result();
 await response.cancel();
 ```
 
-### Example response
+**Response**
 
 The response from the execute method will contain the execution id that can be used to retrieve results later along with two methods to wait for results or cancel the execution:
 
@@ -99,31 +109,7 @@ interface AppExecution {
 }
 ```
 
-The result method implements pulling logic for results with a timeout of 10 minutes. If you want to implement your own pulling logic you can use the getResults method described below.
-
-### Execute an app with streaming
-
-In order to stream the app results you will need to enable stream and pass a callback function to the execute method.
-Optionally you can pass an extra callback function to get a notification when the app is finished.
-
-```javascript
-const response = await airopsInstance.apps.execute({
-  appId: 1,
-  version: 1,
-  payload: {
-    inputs: {
-      name: 'XXXXYYYYZZZZ',
-    },
-  },
-  stream: true,
-  streamCallback: (data: { content: string }) => {
-    // Do something with the data
-  },
-  streamCompletedCallback: (data: { content: string }) => {
-    // Do something with the data
-  },
-});
-```
+The result method implements pulling logic for results with a timeout of **10 minutes**. If you want to implement your own pulling logic you can use the getResults method described below.
 
 ### Pull results async
 
@@ -137,6 +123,7 @@ const result = await airopsInstance.apps.getResults({
 ```
 
 ### Chat Stream
+For Chat Apps, you can use the `chatStream` method which allows you to send messages to the Chat App.
 
 ```javascript
 const response = await airopsInstance.apps.chatStream({
@@ -158,7 +145,7 @@ const result = await response.result;
 response.sessionId;
 ```
 
-### Example response
+**Response**
 
 The response from the chatStream method will contain the sessionId and a result method to wait for the response.
 In order to continue with the chat pass the sessionId along with the message.
@@ -186,6 +173,6 @@ try {
 }
 ```
 
-### Need help?
+## Need help?
 
 Join our AirOps builder [slack](https://join.slack.com/t/airopsbuilders/shared_invite/zt-1whiyc290-fw8tsDn0nq89UqGSXIcUNA) community.
