@@ -75,7 +75,7 @@ const response = await airopsInstance.apps.execute({
   stream: true, // Optional - Default false
   streamCallback: (data: { content: string }) => {
     // Do something with the data
-  }, // Optional
+  }, // Optional, required if stream is true
   streamCompletedCallback: (data: { content: string }) => {
     // Do something with the data
   }, // Optional
