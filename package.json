@@ -1,6 +1,6 @@
 {
   "name": "@airops/airops-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "JavaScript SDK for interacting with AirOps API",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
