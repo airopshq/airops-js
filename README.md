@@ -60,6 +60,7 @@ Once you have successfully initialized the SDK, you can begin using the methods 
 Note that the methods will return promises.
 
 ### Execute an App
+
 The SDK provides a method for executing an app. In order to stream the app results you will need to enable stream and pass a callback function to the execute method. Optionally you can pass an extra callback function to get a notification when the app is finished.
 
 ```javascript
@@ -123,6 +124,7 @@ const result = await airopsInstance.apps.getResults({
 ```
 
 ### Chat Stream
+
 For Chat Apps, you can use the `chatStream` method which allows you to send messages to the Chat App.
 
 ```javascript

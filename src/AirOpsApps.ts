@@ -130,7 +130,7 @@ class AirOpsApps {
       resultResolver = { resolve };
     });
 
-    pusher.subscribeChat(resultResolver, streamChannelId, streamCallback, streamCompletedCallback);
+    await pusher.subscribeChat(resultResolver, streamChannelId, streamCallback, streamCompletedCallback);
 
     const payload = {
       definition: null,

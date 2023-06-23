@@ -62,14 +62,26 @@ class PusherClient {
    * @param streamCallback
    * @param streamCompletedCallback
    */
-  subscribeChat(
+  async subscribeChat(
     resultResolver: Partial<{ resolve: (data: { result: string }) => void }>,
     channelName: string,
     streamCallback: PusherChatCallback,
     streamCompletedCallback?: PusherChatCallback
-  ): () => void {
+  ): Promise<() => void> {
     // subscribe to channel
     this.channel = this.pusher.subscribe(`agent-chat-${channelName}`);
+
+    // Wait for subscription to succeed, otherwise we could lose messages
+    await new Promise((resolve, reject) => {
+      this.channel?.bind('pusher:subscription_error', (error: string) => {
+        reject(new Error(`Subscription error: ${error}`));
+      });
+
+      this.channel?.bind('pusher:subscription_succeeded', () => {
+        resolve(true);
+      });
+    });
+
     // bind to chunk event
     this.channel.bind('agent-response', streamCallback);
     this.channel.bind('completed', (data: { result: string }) => {
