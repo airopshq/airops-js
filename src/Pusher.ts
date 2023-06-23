@@ -38,9 +38,17 @@ class PusherClient {
    * @param streamCallback
    * @param streamCompletedCallback
    */
-  subscribe(channelName: string, streamCallback: PusherCallback, streamCompletedCallback?: PusherCallback): () => void {
+  async subscribe(
+    channelName: string,
+    streamCallback: PusherCallback,
+    streamCompletedCallback?: PusherCallback
+  ): Promise<() => void> {
     // subscribe to channel
     this.channel = this.pusher.subscribe(`app-execution-${channelName}`);
+
+    // Wait for subscription to succeed, otherwise we could lose messages
+    await this.waitForSubscription();
+
     // bind to chunk event
     this.channel.bind('chunk', streamCallback);
     this.channel.bind('completed', (data: { content: string }) => {
@@ -72,15 +80,7 @@ class PusherClient {
     this.channel = this.pusher.subscribe(`agent-chat-${channelName}`);
 
     // Wait for subscription to succeed, otherwise we could lose messages
-    await new Promise((resolve, reject) => {
-      this.channel?.bind('pusher:subscription_error', (error: string) => {
-        reject(new Error(`Subscription error: ${error}`));
-      });
-
-      this.channel?.bind('pusher:subscription_succeeded', () => {
-        resolve(true);
-      });
-    });
+    await this.waitForSubscription();
 
     // bind to chunk event
     this.channel.bind('agent-response', streamCallback);
@@ -95,6 +95,18 @@ class PusherClient {
       this.channel?.unbind_all();
       this.channel?.unsubscribe();
     };
+  }
+
+  waitForSubscription(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.channel?.bind('pusher:subscription_error', (error: string) => {
+        reject(new Error(`Subscription error: ${error}`));
+      });
+
+      this.channel?.bind('pusher:subscription_succeeded', () => {
+        resolve(true);
+      });
+    });
   }
 }
 

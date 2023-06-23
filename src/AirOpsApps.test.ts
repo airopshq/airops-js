@@ -1,4 +1,5 @@
 import AirOpsApps from './AirOpsApps';
+import Pusher from './Pusher';
 import fetchMock from 'jest-fetch-mock';
 
 describe('AirOpsApps', () => {
@@ -90,6 +91,14 @@ describe('AirOpsApps', () => {
   });
 
   describe('chatStream', () => {
+    beforeEach(() => {
+      const spy = jest.spyOn(Pusher.prototype, 'waitForSubscription');
+
+      spy.mockImplementation(async () => {
+        return true;
+      });
+    });
+
     it('should throw an error if message, appId, and streamCallback are not provided', async () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore: Suppress TypeScript error for this specific test case
