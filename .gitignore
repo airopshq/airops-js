@@ -2,3 +2,7 @@
 .env.staging
 /dist
 /node_modules
+.DS_Store
+
+# demos
+/demos/**/node_modules
