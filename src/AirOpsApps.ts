@@ -123,7 +123,9 @@ class AirOpsApps {
 
     const pusher = new Pusher(this.userId, this.workspaceId, this.hashedUserId, this.host);
 
-    let resultResolver: Partial<{ resolve: (data: { result: string }) => void }> = {};
+    let resultResolver: Partial<{
+      resolve: (data: { result: string }) => void;
+    }> = {};
     const resultPromise: Promise<{ result: string }> = new Promise((resolve) => {
       resultResolver = { resolve };
     });
