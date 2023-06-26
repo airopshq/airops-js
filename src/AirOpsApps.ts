@@ -61,7 +61,7 @@ class AirOpsApps {
       pusher = new Pusher(this.userId, this.workspaceId, this.hashedUserId, this.host);
       const channelName = uuidv4();
       apiPayload = { ...payload, stream_channel_id: channelName };
-      unsubscribeMethod = pusher.subscribe(channelName, streamCallback, streamCompletedCallback);
+      unsubscribeMethod = await pusher.subscribe(channelName, streamCallback, streamCompletedCallback);
     } else if (stream) {
       throw new Error('You must provide a callback function when streaming.');
     }
@@ -123,14 +123,12 @@ class AirOpsApps {
 
     const pusher = new Pusher(this.userId, this.workspaceId, this.hashedUserId, this.host);
 
-    let resultResolver: Partial<{
-      resolve: (data: { result: string }) => void;
-    }> = {};
+    let resultResolver: Partial<{ resolve: (data: { result: string }) => void }> = {};
     const resultPromise: Promise<{ result: string }> = new Promise((resolve) => {
       resultResolver = { resolve };
     });
 
-    pusher.subscribeChat(resultResolver, streamChannelId, streamCallback, streamCompletedCallback);
+    await pusher.subscribeChat(resultResolver, streamChannelId, streamCallback, streamCompletedCallback);
 
     const payload = {
       definition: null,
