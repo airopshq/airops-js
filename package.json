@@ -12,6 +12,10 @@
     "README.md",
     "package.json"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/airopshq/airops-js"
+  },
   "scripts": {
     "tsc": "npx tsc",
     "build:clean": "rm -rf ./dist",

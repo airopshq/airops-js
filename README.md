@@ -118,7 +118,6 @@ You can implement your own pulling logic using the getResults method.
 
 ```javascript
 const result = await airopsInstance.apps.getResults({
-  appId: 1,
   executionId: response.executionId,
 });
 ```

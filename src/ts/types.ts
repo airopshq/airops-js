@@ -15,7 +15,7 @@ export interface AirOpsInterface {
 }
 
 export interface ExecuteParams {
-  appId: number;
+  appId: number | string;
   version?: number;
   payload?: Record<string, unknown>;
   stream?: boolean;
@@ -38,8 +38,7 @@ export interface AppExecution {
 }
 
 export interface ExecutionParams {
-  appId: number;
-  executionId: number;
+  executionId: string;
 }
 
 export interface ChatStreamParams {

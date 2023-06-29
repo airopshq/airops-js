@@ -34,7 +34,7 @@ describe('AirOpsApps', () => {
     it('should return the execution response with result and cancel methods', async () => {
       const mockResponse = {
         airops_app_execution: {
-          id: 1,
+          uuid: 'fake-uuid',
         },
       };
       fetchMock.mockResponse(JSON.stringify(mockResponse));
@@ -54,8 +54,7 @@ describe('AirOpsApps', () => {
     it('should call result method and return the result', async () => {
       const mockResponse = {
         airops_app_execution: {
-          id: 1,
-          airops_app_id: 1,
+          uuid: 'fake-uuid',
         },
       };
       fetchMock.mockResponse(JSON.stringify(mockResponse));
@@ -84,7 +83,6 @@ describe('AirOpsApps', () => {
 
       // Check that the getResults method was called
       expect(mockedAirOpsApps.getResults).toHaveBeenCalledWith({
-        appId: 1,
         executionId: executionResult.executionId,
       });
     });
