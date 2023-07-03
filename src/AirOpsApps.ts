@@ -13,9 +13,9 @@ import {
 
 class AirOpsApps {
   private customFetch: CustomFetch;
-  private readonly userId: string;
-  private readonly workspaceId: number;
-  private readonly hashedUserId: string;
+  private readonly userId?: string;
+  private readonly workspaceId?: number;
+  private readonly hashedUserId?: string;
   private readonly host: string;
 
   /**

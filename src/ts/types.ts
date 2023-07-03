@@ -4,9 +4,9 @@ export type PusherCallback = (data: { content: string }) => void;
 export type PusherChatCallback = (data: { token?: string; result?: string }) => void;
 
 export interface IdentifyParams {
-  userId: string;
-  workspaceId: number;
-  hashedUserId: string;
+  userId?: string;
+  workspaceId?: number;
+  hashedUserId?: string;
   host?: string;
 }
 
