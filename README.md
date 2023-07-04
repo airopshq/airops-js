@@ -54,6 +54,12 @@ const airopsInstance = AirOps.identify({
 });
 ```
 
+Note that authorization is **not** required to execute public apps. If you're working with public initialize without arguments:
+
+```javascript
+const airopsInstance = new AirOps();
+```
+
 ## Usage
 
 Once you have successfully initialized the SDK, you can begin using the methods available to interact with our API.
@@ -118,7 +124,6 @@ You can implement your own pulling logic using the getResults method.
 
 ```javascript
 const result = await airopsInstance.apps.getResults({
-  appId: 1,
   executionId: response.executionId,
 });
 ```

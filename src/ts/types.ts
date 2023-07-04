@@ -4,9 +4,9 @@ export type PusherCallback = (data: { content: string }) => void;
 export type PusherChatCallback = (data: { token?: string; result?: string }) => void;
 
 export interface IdentifyParams {
-  userId: string;
-  workspaceId: number;
-  hashedUserId: string;
+  userId?: string;
+  workspaceId?: number;
+  hashedUserId?: string;
   host?: string;
 }
 
@@ -15,7 +15,7 @@ export interface AirOpsInterface {
 }
 
 export interface ExecuteParams {
-  appId: number;
+  appId: number | string;
   version?: number;
   payload?: Record<string, unknown>;
   stream?: boolean;
@@ -38,8 +38,7 @@ export interface AppExecution {
 }
 
 export interface ExecutionParams {
-  appId: number;
-  executionId: number;
+  executionId: string;
 }
 
 export interface ChatStreamParams {

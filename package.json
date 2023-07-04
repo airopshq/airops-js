@@ -1,6 +1,6 @@
 {
   "name": "@airops/airops-js",
-  "version": "1.0.3",
+  "version": "1.3.0",
   "description": "JavaScript SDK for interacting with AirOps API",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -12,6 +12,10 @@
     "README.md",
     "package.json"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/airopshq/airops-js"
+  },
   "scripts": {
     "tsc": "npx tsc",
     "build:clean": "rm -rf ./dist",

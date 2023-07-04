@@ -16,16 +16,16 @@ class PusherClient {
    * @param hashedUserId
    * @param host
    */
-  constructor(userId: string, workspaceId: number, hashedUserId: string, host: string) {
+  constructor(userId?: string, workspaceId?: number, hashedUserId?: string, host?: string) {
     this.pusher = new Pusher(APP_KEY, {
       cluster: APP_CLUSTER,
       channelAuthorization: {
         transport: 'ajax',
         endpoint: `${host}/sdk_api/pusher/auth`,
         headers: {
-          user_id: userId,
-          workspace_id: workspaceId,
-          user_id_hashed: hashedUserId,
+          ...(userId && { user_id: userId }),
+          ...(workspaceId && { workspace_id: workspaceId }),
+          ...(hashedUserId && { user_id_hashed: hashedUserId }),
           'content-type': 'application/json',
         },
       },

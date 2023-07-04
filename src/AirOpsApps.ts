@@ -13,9 +13,9 @@ import {
 
 class AirOpsApps {
   private customFetch: CustomFetch;
-  private readonly userId: string;
-  private readonly workspaceId: number;
-  private readonly hashedUserId: string;
+  private readonly userId?: string;
+  private readonly workspaceId?: number;
+  private readonly hashedUserId?: string;
   private readonly host: string;
 
   /**
@@ -73,7 +73,7 @@ class AirOpsApps {
     const response = await this.customFetch.post(url, apiPayload);
 
     return {
-      executionId: response.airops_app_execution.id,
+      executionId: response.airops_app_execution.uuid,
       result: async () => {
         const timeout = 10 * 60 * 1000; // Timeout in milliseconds (10 minutes)
         const startTime = Date.now();
@@ -84,8 +84,7 @@ class AirOpsApps {
             throw new Error('App execution timeout. You can retrieve the results using the appId & executionId.');
           }
           result = await this.getResults({
-            appId: response.airops_app_execution.airops_app_id,
-            executionId: response.airops_app_execution.id,
+            executionId: response.airops_app_execution.uuid,
           });
           await new Promise((resolve) => setTimeout(resolve, 500));
         }
@@ -94,8 +93,7 @@ class AirOpsApps {
       cancel: async () => {
         unsubscribeMethod?.();
         await this.cancelExecution({
-          appId: response.airops_app_execution.airops_app_id,
-          executionId: response.airops_app_execution.id,
+          executionId: response.airops_app_execution.uuid,
         });
       },
     };
@@ -154,8 +152,8 @@ class AirOpsApps {
    * @returns App execution output
    */
   async getResults(params: ExecutionParams): Promise<AppExecution> {
-    const { appId, executionId } = params;
-    const url = `${this.host}/sdk_api/airops_apps/${appId}/executions/${executionId}`;
+    const { executionId } = params;
+    const url = `${this.host}/sdk_api/airops_apps/executions/${executionId}`;
     return await this.customFetch.get(url);
   }
 
@@ -166,8 +164,8 @@ class AirOpsApps {
    * @param params.executionId - Execution ID
    */
   private async cancelExecution(params: ExecutionParams): Promise<void> {
-    const { appId, executionId } = params;
-    const url = `${this.host}/sdk_api/airops_apps/${appId}/executions/${executionId}/cancel`;
+    const { executionId } = params;
+    const url = `${this.host}/sdk_api/airops_apps/executions/${executionId}/cancel`;
     await this.customFetch.patch(url);
   }
 }

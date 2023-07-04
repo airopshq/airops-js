@@ -1,11 +1,11 @@
 import { ApiError } from './errors/apiError';
 
 class CustomFetch {
-  userId: string;
-  workspaceId: number;
-  hashedUserId: string;
+  userId?: string;
+  workspaceId?: number;
+  hashedUserId?: string;
 
-  constructor(userId: string, workspaceId: number, hashedUserId: string) {
+  constructor(userId?: string, workspaceId?: number, hashedUserId?: string) {
     this.userId = userId;
     this.workspaceId = workspaceId;
     this.hashedUserId = hashedUserId;
@@ -64,9 +64,11 @@ class CustomFetch {
   private getHeaders() {
     const headers = new Headers();
     headers.append('content-type', 'application/json');
-    headers.append('user_id', this.userId);
-    headers.append('workspace_id', this.workspaceId.toString());
-    headers.append('user_id_hashed', this.hashedUserId);
+    if (this.userId && this.workspaceId && this.hashedUserId) {
+      headers.append('user_id', this.userId);
+      headers.append('workspace_id', this.workspaceId.toString());
+      headers.append('user_id_hashed', this.hashedUserId);
+    }
     return headers;
   }
 
