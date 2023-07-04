@@ -7,12 +7,14 @@ class AirOps implements AirOpsInterface {
   private readonly hashedUserId?: string;
   private readonly host?: string;
 
-  constructor(params: IdentifyParams) {
-    const { userId, workspaceId, hashedUserId, host } = params;
-    this.workspaceId = workspaceId;
-    this.userId = userId;
-    this.hashedUserId = hashedUserId;
-    this.host = host || 'https://app.airops.com';
+  constructor(params?: IdentifyParams) {
+    if (params) {
+      const { userId, workspaceId, hashedUserId, host } = params;
+      this.workspaceId = workspaceId;
+      this.userId = userId;
+      this.hashedUserId = hashedUserId;
+      this.host = host || 'https://app.airops.com';
+    }
   }
 
   /**
@@ -38,10 +40,6 @@ class AirOps implements AirOpsInterface {
    * @returns - Apps instance
    */
   public get apps(): AirOpsApps {
-    if (!this.workspaceId || !this.userId || !this.hashedUserId) {
-      throw new Error('You must identify before using the SDK');
-    }
-
     return new AirOpsApps({
       workspaceId: this.workspaceId,
       userId: this.userId,

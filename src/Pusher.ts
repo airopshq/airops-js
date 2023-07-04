@@ -16,16 +16,16 @@ class PusherClient {
    * @param hashedUserId
    * @param host
    */
-  constructor(userId: string, workspaceId: number, hashedUserId: string, host: string) {
+  constructor(userId?: string, workspaceId?: number, hashedUserId?: string, host?: string) {
     this.pusher = new Pusher(APP_KEY, {
       cluster: APP_CLUSTER,
       channelAuthorization: {
         transport: 'ajax',
         endpoint: `${host}/sdk_api/pusher/auth`,
         headers: {
-          user_id: userId,
-          workspace_id: workspaceId,
-          user_id_hashed: hashedUserId,
+          ...(userId && { user_id: userId }),
+          ...(workspaceId && { workspace_id: workspaceId }),
+          ...(hashedUserId && { user_id_hashed: hashedUserId }),
           'content-type': 'application/json',
         },
       },
@@ -38,9 +38,17 @@ class PusherClient {
    * @param streamCallback
    * @param streamCompletedCallback
    */
-  subscribe(channelName: string, streamCallback: PusherCallback, streamCompletedCallback?: PusherCallback): () => void {
+  async subscribe(
+    channelName: string,
+    streamCallback: PusherCallback,
+    streamCompletedCallback?: PusherCallback
+  ): Promise<() => void> {
     // subscribe to channel
     this.channel = this.pusher.subscribe(`app-execution-${channelName}`);
+
+    // Wait for subscription to succeed, otherwise we could lose messages
+    await this.waitForSubscription();
+
     // bind to chunk event
     this.channel.bind('chunk', streamCallback);
     this.channel.bind('completed', (data: { content: string }) => {
@@ -62,14 +70,18 @@ class PusherClient {
    * @param streamCallback
    * @param streamCompletedCallback
    */
-  subscribeChat(
+  async subscribeChat(
     resultResolver: Partial<{ resolve: (data: { result: string }) => void }>,
     channelName: string,
     streamCallback: PusherChatCallback,
     streamCompletedCallback?: PusherChatCallback
-  ): () => void {
+  ): Promise<() => void> {
     // subscribe to channel
     this.channel = this.pusher.subscribe(`agent-chat-${channelName}`);
+
+    // Wait for subscription to succeed, otherwise we could lose messages
+    await this.waitForSubscription();
+
     // bind to chunk event
     this.channel.bind('agent-response', streamCallback);
     this.channel.bind('completed', (data: { result: string }) => {
@@ -83,6 +95,18 @@ class PusherClient {
       this.channel?.unbind_all();
       this.channel?.unsubscribe();
     };
+  }
+
+  waitForSubscription(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.channel?.bind('pusher:subscription_error', (error: string) => {
+        reject(new Error(`Subscription error: ${error}`));
+      });
+
+      this.channel?.bind('pusher:subscription_succeeded', () => {
+        resolve(true);
+      });
+    });
   }
 }
 

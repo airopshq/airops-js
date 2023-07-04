@@ -1,7 +1,7 @@
 {
-  "name": "@airops/js_sdk",
-  "version": "1.9.0-0",
-  "description": "JavaScript SDK",
+  "name": "@airops/airops-js",
+  "version": "1.3.0",
+  "description": "JavaScript SDK for interacting with AirOps API",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "umd:main": "dist/index.umd.js",
@@ -12,6 +12,10 @@
     "README.md",
     "package.json"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/airopshq/airops-js"
+  },
   "scripts": {
     "tsc": "npx tsc",
     "build:clean": "rm -rf ./dist",
@@ -19,19 +23,28 @@
     "compile": "rollup -c --bundleConfigAsCjs",
     "build": "NODE_ENV=staging npm-run-all build:clean compile",
     "build:prod": "NODE_ENV=prod npm-run-all build:clean compile",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:unit": "jest"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.1.0",
     "@rollup/plugin-node-resolve": "^15.0.2",
     "@rollup/plugin-terser": "^0.4.1",
     "@rollup/plugin-typescript": "^11.1.0",
+    "@types/jest": "^29.5.2",
     "@types/uuid": "^9.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
+    "eslint": "^8.43.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "jest-fetch-mock": "^3.0.3",
     "npm-run-all": "^4.1.5",
+    "prettier": "2.8.8",
     "rollup": "^3.21.5",
     "rollup-plugin-dotenv": "^0.4.1",
     "rollup-plugin-polyfill-node": "^0.12.0",
-    "typescript": "^4.8.3"
+    "ts-jest": "^29.1.0",
+    "typescript": "^4.9.5"
   },
   "dependencies": {
     "is-builtin-module": "^3.2.1",
