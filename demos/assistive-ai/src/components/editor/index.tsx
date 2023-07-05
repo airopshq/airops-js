@@ -17,7 +17,7 @@ import './index.scss';
 
 const initialValue: Descendant[] = [
   {
-    type: ElementTypes.HeadingOne,
+    type: ElementTypes.HeadingThree,
     children: [{ text: 'Introducing Apple AirPods, the ultimate wireless audio experience.' }],
   },
   {
