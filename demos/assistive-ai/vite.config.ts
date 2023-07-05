@@ -25,13 +25,4 @@ export default defineConfig({
       }
     }),
   ],
-  build: {
-    rollupOptions: {
-      output: {
-        entryFileNames: `assets/bundle.js`,
-        chunkFileNames: `assets/bundle.js`,
-        assetFileNames: `assets/bundle.[ext]`,
-      }
-    }
-  }
 });
