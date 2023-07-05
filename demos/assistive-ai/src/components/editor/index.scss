@@ -8,6 +8,8 @@
     line-height: 32px !important;
     font-weight: 400 !important;
     outline: none !important;
+    overflow: auto !important;
+    position: relative !important;
 
     & * { outline: none !important; }
 
