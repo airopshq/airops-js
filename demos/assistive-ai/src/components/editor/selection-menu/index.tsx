@@ -14,6 +14,7 @@ type SelectionMenuProps = {
 };
 
 const SelectionMenu = ({ maxWidth = '100%' }: SelectionMenuProps) => {
+  const wrapperRef = useRef<HTMLElement>(document.getElementById('assistive-ai-demo') as HTMLElement);
   const ref = useRef<HTMLDivElement | null>(null);
   const editor = useSlate();
   const [action, setAction] = useState<Action | undefined>(undefined);
@@ -43,9 +44,11 @@ const SelectionMenu = ({ maxWidth = '100%' }: SelectionMenuProps) => {
 
     const domRange = domSelection.getRangeAt(0);
     const rect = domRange.getBoundingClientRect();
+    const wrapperRect = wrapperRef.current.getBoundingClientRect();
+
     el.style.opacity = '1';
-    el.style.top = `${rect.bottom}px`;
-    el.style.left = action ? '24px' : `${rect.left}px`;
+    el.style.top = `${rect.bottom - wrapperRect.y}px`;
+    el.style.left = `${rect.left - wrapperRect.left}px`;
     el.style.maxWidth = typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth;
   });
 
@@ -55,7 +58,6 @@ const SelectionMenu = ({ maxWidth = '100%' }: SelectionMenuProps) => {
 
     if (!el || !selection) return;
 
-    el.style.left = '24px';
     setAction(action);
     getAssistance({ action, selection: selection.toString() });
   }
