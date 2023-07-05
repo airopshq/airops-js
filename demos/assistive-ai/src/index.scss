@@ -1,0 +1,23 @@
+#assistive-ai-demo {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 16px !important;
+
+  .wrapper {
+    border-radius: 16px !important;
+    border: 1px solid rgba(128, 133, 147, .24) !important;
+    box-shadow: 0 4px 8px -4px rgba(0, 0, 0, .12) !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .header {
+    background-color: #f9fafb !important;
+    border-bottom: 1px solid rgba(128, 133, 147, .24) !important;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+    font-size: inherit !important;
+    font-weight: bold;
+    margin: 0 !important;
+    padding: 8px 12px !important;
+  }
+}
