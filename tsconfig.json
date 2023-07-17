@@ -9,5 +9,6 @@
     "outDir": "./dist",
     "module": "esnext",
     "moduleResolution": "node"
-  }
+  },
+  "exclude": ["./node_modules", "./demos"]
 }
