@@ -110,7 +110,7 @@ class AirOpsApps {
    * @returns - Chat stream response
    */
   async chatStream(params: ChatStreamParams): Promise<ChatStreamResponse> {
-    const { message, appId, streamCallback, streamCompletedCallback, sessionId } = params;
+    const { message, appId, inputs, streamCallback, streamCompletedCallback, sessionId } = params;
 
     if (!message || !appId || !streamCallback) {
       throw new Error('You must provide a message, appId and streamCallback.');
@@ -130,6 +130,7 @@ class AirOpsApps {
 
     const payload = {
       definition: null,
+      inputs,
       message,
       stream_channel_id: streamChannelId,
       session_id: chatSessionId,
