@@ -136,6 +136,9 @@ For Chat Apps, you can use the `chatStream` method which allows you to send mess
 const response = await airopsInstance.apps.chatStream({
   appId: 2,
   message,
+  inputs: {
+    name: 'XXXXYYYYZZZZ',
+  },
   streamCallback: (data: { token: string }) => {
     // do something with data.token
   },

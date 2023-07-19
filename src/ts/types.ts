@@ -42,11 +42,12 @@ export interface ExecutionParams {
 }
 
 export interface ChatStreamParams {
-  appId: number;
+  appId: number | string;
   message: string;
   streamCallback: PusherChatCallback;
   streamCompletedCallback?: PusherChatCallback;
   sessionId?: string;
+  inputs?: Record<string, unknown>;
 }
 
 export interface ChatStreamResponse {
