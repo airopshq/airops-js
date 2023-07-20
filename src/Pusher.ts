@@ -8,6 +8,8 @@ const APP_CLUSTER = process.env.APP_CLUSTER || '';
 class PusherClient {
   private pusher: Pusher;
   private channel: Channel | undefined;
+  private readonly channelPrefix: string;
+  private readonly public: Boolean = false;
 
   /**
    * Pusher constructor
@@ -17,6 +19,12 @@ class PusherClient {
    * @param host
    */
   constructor(userId?: string, workspaceId?: number, hashedUserId?: string, host?: string) {
+    if (!userId || !workspaceId || !hashedUserId) {
+      this.channelPrefix = `public`;
+    } else {
+      this.channelPrefix = `private`;
+    }
+
     this.pusher = new Pusher(APP_KEY, {
       cluster: APP_CLUSTER,
       channelAuthorization: {
@@ -43,8 +51,10 @@ class PusherClient {
     streamCallback: PusherCallback,
     streamCompletedCallback?: PusherCallback
   ): Promise<() => void> {
+    const channel = `${this.channelPrefix}-${channelName}`;
+
     // subscribe to channel
-    this.channel = this.pusher.subscribe(`app-execution-${channelName}`);
+    this.channel = this.pusher.subscribe(channel);
 
     // Wait for subscription to succeed, otherwise we could lose messages
     await this.waitForSubscription();
@@ -76,8 +86,10 @@ class PusherClient {
     streamCallback: PusherChatCallback,
     streamCompletedCallback?: PusherChatCallback
   ): Promise<() => void> {
+    const channel = `${this.channelPrefix}-${channelName}`;
+
     // subscribe to channel
-    this.channel = this.pusher.subscribe(`agent-chat-${channelName}`);
+    this.channel = this.pusher.subscribe(channel);
 
     // Wait for subscription to succeed, otherwise we could lose messages
     await this.waitForSubscription();
