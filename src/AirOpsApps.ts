@@ -36,7 +36,7 @@ class AirOpsApps {
   }
 
   /**
-   * Get app 
+   * Get app
    * @param appId - App Id
    * @returns App execution output
    */

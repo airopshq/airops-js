@@ -10,21 +10,23 @@ export enum ChatAction {
 export type AgentResponseData = {
   action: ChatAction.AgentResponse;
   token: string;
-  stream_finished: boolean,
+  stream_finished: boolean;
   result: string;
-}
+};
 export type AgentActionData = {
   action: ChatAction.AgentAction;
   tool: string;
   tool_input: Record<string, string>;
-}
+};
 export type AgentActionErrorData = {
   action: ChatAction.AgentActionError;
   tool: string;
   tool_error: string;
-}
-export type CompletedData = { action: ChatAction.Completed, result: string };
-export type PusherChatCallback = (arg: AgentResponseData | AgentActionData | AgentActionErrorData | CompletedData) => void;
+};
+export type CompletedData = { action: ChatAction.Completed; result: string };
+export type PusherChatCallback = (
+  arg: AgentResponseData | AgentActionData | AgentActionErrorData | CompletedData
+) => void;
 
 export interface IdentifyParams {
   userId?: string;
@@ -58,7 +60,7 @@ export interface AppExecution {
   error_message: string | null;
   id: number;
   output: string | Record<string, any>;
-  status: 'pending' | 'running' |  'error' |  'success' |  'cancelled';
+  status: 'pending' | 'running' | 'error' | 'success' | 'cancelled';
   stream_channel_id: string;
   uuid: string;
 }

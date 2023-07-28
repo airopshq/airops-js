@@ -1,5 +1,13 @@
 import Pusher, { Channel } from 'pusher-js/with-encryption';
-import { AgentActionData, AgentActionErrorData, AgentResponseData, ChatAction, CompletedData, PusherCallback, PusherChatCallback } from './ts/types';
+import {
+  AgentActionData,
+  AgentActionErrorData,
+  AgentResponseData,
+  ChatAction,
+  CompletedData,
+  PusherCallback,
+  PusherChatCallback,
+} from './ts/types';
 
 /* eslint-disable no-process-env */
 const APP_KEY = process.env.APP_KEY || '';
@@ -93,26 +101,20 @@ class PusherClient {
     await this.waitForSubscription();
 
     // bind to chunk events
-    this.channel.bind(
-      ChatAction.AgentResponse,
-      (data: Omit<AgentResponseData, 'action'>) => streamCallback({ action: ChatAction.AgentResponse, ...data })
+    this.channel.bind(ChatAction.AgentResponse, (data: Omit<AgentResponseData, 'action'>) =>
+      streamCallback({ action: ChatAction.AgentResponse, ...data })
     );
-    this.channel.bind(
-      ChatAction.AgentAction,
-      (data: Omit<AgentActionData, 'action'>) => streamCallback({ action: ChatAction.AgentAction, ...data })
+    this.channel.bind(ChatAction.AgentAction, (data: Omit<AgentActionData, 'action'>) =>
+      streamCallback({ action: ChatAction.AgentAction, ...data })
     );
-    this.channel.bind(
-      ChatAction.AgentActionError,
-      (data: Omit<AgentActionErrorData, 'action'>) => streamCallback({ action: ChatAction.AgentActionError, ...data })
+    this.channel.bind(ChatAction.AgentActionError, (data: Omit<AgentActionErrorData, 'action'>) =>
+      streamCallback({ action: ChatAction.AgentActionError, ...data })
     );
-    this.channel.bind(
-      ChatAction.Completed,
-      (data: Omit<CompletedData, 'action'>) => {
-        this.channel?.unbind_all();
-        this.channel?.unsubscribe();
-        streamCompletedCallback?.({ action: ChatAction.Completed, ...data });
-      }
-    );
+    this.channel.bind(ChatAction.Completed, (data: Omit<CompletedData, 'action'>) => {
+      this.channel?.unbind_all();
+      this.channel?.unsubscribe();
+      streamCompletedCallback?.({ action: ChatAction.Completed, ...data });
+    });
 
     return () => {
       this.channel?.unbind_all();
