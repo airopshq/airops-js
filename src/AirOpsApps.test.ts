@@ -113,7 +113,7 @@ describe('AirOpsApps', () => {
       });
 
       expect(chatStreamResponse.sessionId).toBeDefined();
-      expect(chatStreamResponse.result).toBeInstanceOf(Promise);
+      expect(chatStreamResponse.result).toBeInstanceOf(Function);
     });
   });
 });
