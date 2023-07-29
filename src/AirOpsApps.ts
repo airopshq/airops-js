@@ -135,7 +135,7 @@ class AirOpsApps {
 
     const pusher = new Pusher(this.userId, this.workspaceId, this.hashedUserId, this.host);
 
-    await pusher.subscribeChat(streamChannelId, streamCallback, streamCompletedCallback);
+    const unsubscribeMethod = await pusher.subscribeChat(streamChannelId, streamCallback, streamCompletedCallback);
 
     const payload = {
       definition: null,
@@ -149,6 +149,12 @@ class AirOpsApps {
     const response = await this.customFetch.post(url, payload);
 
     return {
+      cancel: async () => {
+        unsubscribeMethod?.();
+        await this.cancelExecution({
+          executionId: response.airops_app_execution.uuid,
+        });
+      },
       sessionId: chatSessionId,
       result: async () => {
         const timeout = 10 * 60 * 1000; // Timeout in milliseconds (10 minutes)

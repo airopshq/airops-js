@@ -49,9 +49,9 @@ export interface ExecuteParams {
 }
 
 export interface ExecuteResponse {
+  cancel: () => Promise<void>;
   executionId: number;
   result: () => Promise<AppExecution>;
-  cancel: () => Promise<void>;
 }
 
 export interface AppExecution {
@@ -79,6 +79,7 @@ export interface ChatStreamParams {
 }
 
 export interface ChatStreamResponse {
-  sessionId: string;
+  cancel: () => Promise<void>;
   result: () => Promise<AppExecution>;
+  sessionId: string;
 }
