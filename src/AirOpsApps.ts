@@ -88,22 +88,7 @@ class AirOpsApps {
 
     return {
       executionId: response.airops_app_execution.uuid,
-      result: async () => {
-        const timeout = 10 * 60 * 1000; // Timeout in milliseconds (10 minutes)
-        const startTime = Date.now();
-
-        let result = null;
-        while (!result || ['queued', 'pending', 'running'].includes(result?.status)) {
-          if (Date.now() - startTime > timeout) {
-            throw new Error('App execution timeout. You can retrieve the results using the appId & executionId.');
-          }
-          result = await this.getResults({
-            executionId: response.airops_app_execution.uuid,
-          });
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        }
-        return result;
-      },
+      result: () => this.pollExecutionResult(response),
       cancel: async () => {
         unsubscribeMethod?.();
         await this.cancelExecution({
@@ -156,22 +141,7 @@ class AirOpsApps {
         });
       },
       sessionId: chatSessionId,
-      result: async () => {
-        const timeout = 10 * 60 * 1000; // Timeout in milliseconds (10 minutes)
-        const startTime = Date.now();
-
-        let result = null;
-        while (!result || ['queued', 'pending', 'running'].includes(result?.status)) {
-          if (Date.now() - startTime > timeout) {
-            throw new Error('App execution timeout. You can retrieve the results using the appId & executionId.');
-          }
-          result = await this.getResults({
-            executionId: response.airops_app_execution.uuid,
-          });
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        }
-        return result;
-      },
+      result: () => this.pollExecutionResult(response),
     };
   }
 
@@ -198,6 +168,24 @@ class AirOpsApps {
     const { executionId } = params;
     const url = `${this.host}/sdk_api/airops_apps/executions/${executionId}/cancel`;
     await this.customFetch.patch(url);
+  }
+
+  private async pollExecutionResult(response: { airops_app_execution: { uuid: string } }): Promise<AppExecution> {
+    const timeout = 10 * 60 * 1000; // Timeout in milliseconds (10 minutes)
+    const startTime = Date.now();
+
+    let result = null;
+    while (!result || ['queued', 'pending', 'running'].includes(result?.status)) {
+      if (Date.now() - startTime > timeout) {
+        throw new Error('App execution timeout. You can retrieve the results using the appId & executionId.');
+      }
+      result = await this.getResults({
+        executionId: response.airops_app_execution.uuid,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+
+    return result;
   }
 }
 
