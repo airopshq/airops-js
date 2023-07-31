@@ -45,7 +45,7 @@ class AirOpsApps {
       throw new Error('You must provide an app id.');
     }
 
-    const url = `${this.host}/sdk_api/airops_app_bases/${appId}`;
+    const url = `${this.host}/sdk_api/airops_app_bases/${appId}?methods=type`;
     return await this.customFetch.get(url);
   }
 

@@ -1,5 +1,5 @@
 import AirOps from './AirOps';
-import { ChatAction } from './ts/types';
+import { ChatAction, ChatStreamResponse } from './ts/types';
 
-export { ChatAction };
+export { ChatAction, ChatStreamResponse };
 export default AirOps;
