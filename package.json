@@ -23,7 +23,8 @@
     "compile": "rollup -c --bundleConfigAsCjs",
     "build": "NODE_ENV=staging npm-run-all build:clean compile",
     "build:prod": "NODE_ENV=prod npm-run-all build:clean compile",
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.1.0",
@@ -35,9 +36,11 @@
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
     "eslint": "^8.43.0",
+    "husky": "^8.0.3",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "jest-fetch-mock": "^3.0.3",
+    "lint-staged": "^13.2.3",
     "npm-run-all": "^4.1.5",
     "prettier": "2.8.8",
     "rollup": "^3.21.5",
@@ -51,5 +54,11 @@
     "pusher-js": "^8.0.2",
     "uuid": "^9.0.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "lint-staged": {
+    "./src/*.{js,ts,tsx,jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  }
 }

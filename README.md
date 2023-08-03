@@ -139,8 +139,12 @@ const response = await airopsInstance.apps.chatStream({
   inputs: {
     name: 'XXXXYYYYZZZZ',
   },
-  streamCallback: (data: { token: string }) => {
-    // do something with data.token
+  streamCallback: ({ action: ChatAction, ...data) => {
+    // ChatAction can either be 'agent-response', 'agent-action' or 'agent-action-error'
+    // data will have different values depending on the action:
+    //   - agent-response: { token: string, stream_finished: boolean, result :string }
+    //   - agent-action: { tool: string, tool_input: Record<string, string> }
+    //   - agent-action-error: { tool: string, tool_error: string }
   },
   streamCompletedCallback: (data: { result: string }) => {
     // do something with data.result
@@ -148,7 +152,7 @@ const response = await airopsInstance.apps.chatStream({
   ...(sessionId && { sessionId }), // optionally pass sessionId to continue chat.
 });
 // Wait for result
-const result = await response.result;
+const result = await response.result();
 // Do something with result.result
 
 // Use session id to continue chat

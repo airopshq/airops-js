@@ -1,7 +1,32 @@
 import Apps from '../AirOpsApps';
 
 export type PusherCallback = (data: { content: string }) => void;
-export type PusherChatCallback = (data: { token?: string; result?: string }) => void;
+export enum ChatAction {
+  'AgentResponse' = 'agent-response',
+  'AgentAction' = 'agent-action',
+  'AgentActionError' = 'agent-action-error',
+  'Completed' = 'completed',
+}
+export type AgentResponseData = {
+  action: ChatAction.AgentResponse;
+  token: string;
+  stream_finished: boolean;
+  result: string;
+};
+export type AgentActionData = {
+  action: ChatAction.AgentAction;
+  tool: string;
+  tool_input: Record<string, string>;
+};
+export type AgentActionErrorData = {
+  action: ChatAction.AgentActionError;
+  tool: string;
+  tool_error: string;
+};
+export type CompletedData = { action: ChatAction.Completed; result: string };
+export type PusherChatCallback = (
+  arg: AgentResponseData | AgentActionData | AgentActionErrorData | CompletedData
+) => void;
 
 export interface IdentifyParams {
   userId?: string;
@@ -24,17 +49,20 @@ export interface ExecuteParams {
 }
 
 export interface ExecuteResponse {
+  cancel: () => Promise<void>;
   executionId: number;
   result: () => Promise<AppExecution>;
-  cancel: () => Promise<void>;
 }
 
 export interface AppExecution {
   airops_app_id: number;
+  error_code: string | null;
+  error_message: string | null;
   id: number;
-  status: string;
-  output: string;
+  output: string | Record<string, any>;
+  status: 'pending' | 'running' | 'error' | 'success' | 'cancelled';
   stream_channel_id: string;
+  uuid: string;
 }
 
 export interface ExecutionParams {
@@ -51,6 +79,7 @@ export interface ChatStreamParams {
 }
 
 export interface ChatStreamResponse {
+  cancel: () => Promise<void>;
+  result: () => Promise<AppExecution>;
   sessionId: string;
-  result: Promise<{ result: string }>;
 }
