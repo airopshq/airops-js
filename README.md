@@ -6,6 +6,18 @@ Use [AirOps](https://docs.airops.com/docs/client-sdk) API in your client applica
 
 # Getting Started
 
+## Installation
+
+```bash
+ npm i @airops/airops-js
+```
+
+or use the CDN:
+
+```html
+<script src=“https://cdn.jsdelivr.net/npm/@airops/airops-js/dist/index.umd.min.js”></script>
+```
+
 ## Server configuration
 
 To authenticate with our API using the SDK, you'll need three pieces of information: your workspace id, API key and user
@@ -30,18 +42,6 @@ const userIdHash = () => {
 
   return hash;
 };
-```
-
-## Installation
-
-```bash
- npm i @airops/airops-js
-```
-
-or use the CDN:
-
-```html
-<script src=“https://cdn.jsdelivr.net/npm/@airops/airops-js/dist/index.umd.min.js”></script>
 ```
 
 ## Initialize the SDK
