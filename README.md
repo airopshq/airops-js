@@ -151,9 +151,13 @@ const response = await airopsInstance.apps.chatStream({
   },
   ...(sessionId && { sessionId }), // optionally pass sessionId to continue chat.
 });
+
 // Wait for result
 const result = await response.result();
 // Do something with result.result
+
+// Cancel execution
+await response.cancel();
 
 // Use session id to continue chat
 response.sessionId;
