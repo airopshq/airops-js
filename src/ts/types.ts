@@ -1,29 +1,35 @@
 import Apps from '../AirOpsApps';
 
 export type PusherCallback = (data: { content: string }) => void;
+
 export enum ChatAction {
   'AgentResponse' = 'agent-response',
   'AgentAction' = 'agent-action',
   'AgentActionError' = 'agent-action-error',
   'Completed' = 'completed',
 }
+
 export type AgentResponseData = {
   action: ChatAction.AgentResponse;
   token: string;
   stream_finished: boolean;
   result: string;
 };
+
 export type AgentActionData = {
   action: ChatAction.AgentAction;
   tool: string;
   tool_input: Record<string, string>;
 };
+
 export type AgentActionErrorData = {
   action: ChatAction.AgentActionError;
   tool: string;
   tool_error: string;
 };
+
 export type CompletedData = { action: ChatAction.Completed; result: string };
+
 export type PusherChatCallback = (
   arg: AgentResponseData | AgentActionData | AgentActionErrorData | CompletedData
 ) => void;

@@ -21,17 +21,12 @@ class PusherClient {
 
   /**
    * Pusher constructor
-   * @param userId
-   * @param workspaceId
-   * @param hashedUserId
+   * @param isPublic
    * @param host
+   * @param headers
    */
-  constructor(userId?: string, workspaceId?: number, hashedUserId?: string, host?: string) {
-    if (!userId || !workspaceId || !hashedUserId) {
-      this.channelPrefix = 'public';
-    } else {
-      this.channelPrefix = 'private';
-    }
+  constructor(isPublic: boolean, host: string, headers?: Record<string, any>) {
+    this.channelPrefix = isPublic ? 'public' : 'private';
 
     this.pusher = new Pusher(APP_KEY, {
       cluster: APP_CLUSTER,
@@ -39,9 +34,7 @@ class PusherClient {
         transport: 'ajax',
         endpoint: `${host}/sdk_api/pusher/auth`,
         headers: {
-          ...(userId && { user_id: userId }),
-          ...(workspaceId && { workspace_id: workspaceId }),
-          ...(hashedUserId && { user_id_hashed: hashedUserId }),
+          ...(headers ?? {}),
           'content-type': 'application/json',
         },
       },

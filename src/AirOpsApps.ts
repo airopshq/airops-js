@@ -2,13 +2,13 @@ import { v4 as uuidv4 } from 'uuid';
 import Pusher from './Pusher';
 import CustomFetch from './CustomFetch';
 import {
-  IdentifyParams,
-  ExecuteParams,
-  ExecutionParams,
-  ExecuteResponse,
   AppExecution,
   ChatStreamParams,
   ChatStreamResponse,
+  ExecuteParams,
+  ExecuteResponse,
+  ExecutionParams,
+  IdentifyParams,
 } from './ts/types';
 
 class AirOpsApps {
@@ -40,7 +40,7 @@ class AirOpsApps {
    * @param appId - App Id
    * @returns App execution output
    */
-  async get(appId: string): Promise<any> {
+  async get(appId: number | string): Promise<any> {
     if (!appId) {
       throw new Error('You must provide an app id.');
     }
@@ -72,7 +72,7 @@ class AirOpsApps {
 
     let unsubscribeMethod: () => void = () => null;
     if (stream && streamCallback) {
-      pusher = new Pusher(this.userId, this.workspaceId, this.hashedUserId, this.host);
+      pusher = await this.initializePusher(appId);
       const channelName = uuidv4();
       apiPayload = { ...payload, stream_channel_id: channelName };
       unsubscribeMethod = await pusher.subscribe(channelName, streamCallback, streamCompletedCallback);
@@ -118,8 +118,7 @@ class AirOpsApps {
     const streamChannelId = uuidv4();
     const chatSessionId = sessionId ? sessionId : uuidv4();
 
-    const pusher = new Pusher(this.userId, this.workspaceId, this.hashedUserId, this.host);
-
+    const pusher = await this.initializePusher(params.appId);
     const unsubscribeMethod = await pusher.subscribeChat(streamChannelId, streamCallback, streamCompletedCallback);
 
     const payload = {
@@ -186,6 +185,16 @@ class AirOpsApps {
     }
 
     return result;
+  }
+
+  private async initializePusher(appId: number | string): Promise<Pusher> {
+    const app = await this.get(appId);
+
+    return new Pusher(app.public, this.host, {
+      ...(this.userId && { user_id: this.userId }),
+      ...(this.workspaceId && { workspace_id: this.workspaceId }),
+      ...(this.hashedUserId && { user_id_hashed: this.hashedUserId }),
+    });
   }
 }
 
